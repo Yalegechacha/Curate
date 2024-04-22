@@ -151,11 +151,12 @@ body, html {
 
 .tabs button {
     padding: 10px 15px;
-    margin-right: 5px;
+    margin-right: 20px;
     border: none;
     background: #d0e2e4;
     cursor: pointer;
     border-bottom: 2px solid transparent;
+    font-weight: bold;
 }
 
 .tabs button:hover, .tabs button.active {
@@ -216,7 +217,12 @@ body, html {
 }
 
 .problem-section, .timeline-section, .events-section {
-    margin-bottom: 20px;
+    padding-bottom: 100px;
+}
+
+.events-section {
+    display: flex;
+    flex-direction: column;
 }
 
 .timeline {
@@ -248,6 +254,144 @@ body, html {
     background-color: #f0f0f0;
 }
 
+.event-tabs {
+    display: flex;
+    padding: 10px 0;
+}
 
+.event-tab {
+    padding: 10px 15px;
+    background: #f0f0f0;
+    margin-right: 40px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.event-tab:last-child {
+    margin-right: 0;
+}
+
+.event-tab:hover,
+.event-tab.active {
+    background-color: #e0e0e0;
+    border-bottom: 2px solid #007bff;
+}
+
+.event-content-container {
+    border-top: 2px solid #ccc;
+}
+
+.event-content {
+    display: none;
+    padding: 20px;
+    background: #f9f9f9;
+}
+
+.document-button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+    border: none;
+    background: white;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.result-button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #f4f4f4;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.result-button:hover {
+    background-color: #e2e2e2;
+}
+
+.result-title {
+    font-weight: bold;
+}
+
+.result-description {
+    margin: 5px 0;
+}
+
+.result-date {
+    text-align: right;
+    float: right;
+}
+
+.treatment-button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #f4f4f4;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.treatment-button:hover {
+    background-color: #e2e2e2;
+}
+
+.treatment-title {
+    font-weight: bold;
+}
+
+.treatment-date {
+    text-align: right;
+    float: right;
+}
+
+.note-button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #f4f4f4;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.note-button:hover {
+    background-color: #e2e2e2;
+}
+
+.note-title {
+    font-weight: bold;
+}
+
+.note-date {
+    text-align: right;
+    float: right;
+}
+
+.summary-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #f0f0f0; /* Light gray background */
+    border: 1px solid #ccc; /* Border color */
+    text-align: left;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.summary-button:hover {
+    background-color: #e0e0e0; /* Slightly darker background on hover */
+}
 
 

@@ -6,6 +6,19 @@ const tabMap = {
     'Tests': '.tests-container'
 };
 
+const patientData = {
+    overview: "Emily Johnson, 52, with a history of hypertension, diagnosed with estrogen receptor-positive, HER2-negative invasive ductal carcinoma, underwent lumpectomy, adjuvant therapy (TAC chemotherapy, radiation, tamoxifen), and showed no recurrence during post-treatment follow-up.",
+    problems: [
+        { name: 'Breast Cancer: Invasive Ductal Carcinoma, Stage IIO', status: 'Active' },
+        { name: 'Hypertension', status: 'Active' }
+    ],
+    medications: [
+        { name: 'Acetaminophen', dose: '500 mg', status: 'Active' },
+        { name: 'Ondansetron', dose: '4 mg', status: 'Active' },
+        { name: 'Amlodipine', dose: '5 mg', status: '2006-2019' }
+    ]
+};
+
 function loadFile() {
     var fileInput = document.getElementById('file-input');
     var filePath = fileInput.value;
@@ -50,10 +63,21 @@ function showTabContent(tabName) {
     const selector = tabMap[tabName];
     if (selector) {
         const content = document.querySelector(selector);
-        content.style.display = 'flex'; // Show the selected tab content
+        content.style.display = 'flex';
+
+        // Hide other tab contents
+        Object.values(tabMap).forEach(tabSelector => {
+            if (tabSelector !== selector) {
+                document.querySelector(tabSelector).style.display = 'none';
+            }
+        });
+
         if (tabName === 'Problems') {
             generateTimeline();
             setupConditionTabs();
+        } else if (tabName === 'Summary') {
+            // Call populateSummary from summary-content.js
+            populateSummary();
         }
     }
 }
@@ -62,6 +86,8 @@ function resetTabs(allTabContents, tabs) {
     allTabContents.forEach(content => content.style.display = 'none');
     tabs.forEach(tab => tab.classList.remove('active'));
 }
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const tabs = document.querySelectorAll('.tabs button');
@@ -80,7 +106,24 @@ document.addEventListener('DOMContentLoaded', () => {
     if (defaultTab) {
         defaultTab.classList.add('active');
         showTabContent(defaultTab.textContent.trim());
-        // Note: setupConditionTabs will be defined in condition.js
-        setupConditionTabs(); // This will now refer to the setupConditionTabs in condition.js
+        setupConditionTabs(); // Set up the condition tabs
+
+        // After setting up the condition tabs, find the default condition tab that is active
+        const activeConditionTab = document.querySelector('.condition-tab.active');
+        if (activeConditionTab) {
+            const activeConditionId = activeConditionTab.dataset.conditionId;
+            setupEventTabs(); // Set up the event tabs
+
+            // Find the default event tab within the active condition and click it
+            const defaultEventTab = document.querySelector(`#${activeConditionId} .event-tab[data-event-tab="results"]`);
+            if (defaultEventTab) {
+                defaultEventTab.click(); // This will also call generateResultsButtons for the active condition
+            }
+        }
+    }
+
+    const summaryTabIsActive = document.querySelector('.tabs button.active').textContent.trim() === 'Summary';
+    if (summaryTabIsActive) {
+        populateSummary();
     }
 });
