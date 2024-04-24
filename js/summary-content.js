@@ -1,5 +1,4 @@
-function populateSummary() {
-    // Assuming you have an element with ID 'summary-content' inside your '.summary-container'
+function populateSummary(data) {
     const summaryContentElement = document.getElementById('summary-content');
     summaryContentElement.innerHTML = ''; // Clear out existing content
 
@@ -9,7 +8,7 @@ function populateSummary() {
     summaryContentElement.appendChild(patientOverviewTitle);
 
     const patientOverviewElement = document.createElement('p');
-    patientOverviewElement.textContent = patientData.overview;
+    patientOverviewElement.textContent = data.overview;
     summaryContentElement.appendChild(patientOverviewElement);
 
     // Create the Problems section
@@ -18,14 +17,13 @@ function populateSummary() {
     summaryContentElement.appendChild(problemsTitle);
 
     const problemsContainer = document.createElement('div');
-    patientData.problems.forEach(problem => {
+    data.problems.forEach(problem => {
         const problemButton = document.createElement('button');
-        problemButton.textContent = `${problem.name}: ${problem.status}`;
-        problemButton.className = 'summary-button'; // Apply CSS class for styling
-        problemButton.addEventListener('click', () => {
-            document.querySelector('.tabs button:nth-child(2)').click(); // This assumes 'Problems' is the second button
-            document.querySelector(`.condition-tab[data-condition-id="${problem.name.toLowerCase().replace(/\s/g, '-')}"`).click(); // Convert problem name to id
-        });
+        problemButton.textContent = `${problem.name}: ${problem.active ? 'Active' : 'Inactive'}`;
+        problemButton.className = 'summary-button';
+        problemButton.onclick = function () {
+            // Your logic to navigate to the problem details
+        };
         problemsContainer.appendChild(problemButton);
     });
     summaryContentElement.appendChild(problemsContainer);
@@ -36,13 +34,15 @@ function populateSummary() {
     summaryContentElement.appendChild(medicationsTitle);
 
     const medicationsContainer = document.createElement('div');
-    patientData.medications.forEach(medication => {
+    data.medications.forEach(medication => {
         const medicationButton = document.createElement('button');
-        medicationButton.textContent = `${medication.name} ${medication.dose} (${medication.status})`;
-        medicationButton.className = 'summary-button'; // Apply CSS class for styling
+        medicationButton.textContent = `${medication.name} ${medication.dosage} (${medication.active ? 'Active' : 'Inactive'})`;
+        medicationButton.className = 'summary-button';
+        medicationButton.onclick = function () {
+            // Your logic to navigate to the medication details
+        };
         medicationsContainer.appendChild(medicationButton);
     });
     summaryContentElement.appendChild(medicationsContainer);
-
-    // Add any additional elements you need for the summary content here...
 }
+

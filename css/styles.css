@@ -4,6 +4,7 @@ body, html {
     margin: 0;
     padding: 0;
     background: #e4f8fa;
+    overflow-x: hidden;
 }
 
 .logo {
@@ -175,18 +176,16 @@ body, html {
 .problems-container {
     display: flex;
     /* Adjust padding as needed */
-    padding: 20px;
 }
 
 .condition-tabs {
-    width: 10%;
+    width: 8%;
     background-color: #d0e2e4;
     display: flex;
-    padding-right: 50px;
+    padding-right: 30px;
     padding-left: 10px;
     margin-top: 25px;
     gap: 20px;
-    white-space: nowrap;
     flex-direction: column; /* Stack children vertically */
     justify-content: flex-start; /* Align children to the start of the flex container */
 }
@@ -212,77 +211,68 @@ body, html {
     margin-bottom: 0; /* Removes the margin from the last tab to avoid extra space at the bottom */
 }
 
+.condition-details {
+    position: relative;
+    flex-grow: 1;
+    padding: 20px;
+    overflow: auto;
+}
+
 .problem-section h2 {
     color: #0071ea;
 }
 
-.problem-section, .timeline-section, .events-section {
+.problem-section, .reports-section {
     padding-bottom: 100px;
 }
 
-.events-section {
+.reports-section {
     display: flex;
     flex-direction: column;
 }
 
-.timeline {
-    display: flex;
-    align-items: center;
-    overflow-x: auto;
-    margin-top: 10px;
-}
-
-.timeline div {
-    height: 20px;
-    width: 40px; /* Adjust width based on duration or other factors */
-    margin-right: 5px;
-    background-color: #007bff; /* Color code for each type of event */
-}
-
-.events-section table {
+.reports-section table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.events-section th, .events-section td {
+.reports-section th, .reports-section td {
     text-align: left;
     padding: 8px;
     border-bottom: 1px solid #ddd;
 }
 
-.events-section th {
+.reports-section th {
     background-color: #f0f0f0;
 }
 
-.event-tabs {
-    display: flex;
-    padding: 10px 0;
-}
-
-.event-tab {
-    padding: 10px 15px;
-    background: #f0f0f0;
-    margin-right: 40px;
-    border: none;
+.report-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #f0f0f0; /* Light gray background */
+    border: 1px solid #ccc; /* Border color */
+    text-align: left;
     cursor: pointer;
-    font-weight: bold;
+    border-radius: 4px;
 }
 
-.event-tab:last-child {
+.report-button:last-child {
     margin-right: 0;
 }
 
-.event-tab:hover,
-.event-tab.active {
+.report-button:hover,
+.report-button.active {
     background-color: #e0e0e0;
-    border-bottom: 2px solid #007bff;
 }
 
-.event-content-container {
+.report-content-container {
     border-top: 2px solid #ccc;
+    height: 100%;
 }
 
-.event-content {
+.report-content {
     display: none;
     padding: 20px;
     background: #f9f9f9;
@@ -297,85 +287,6 @@ body, html {
     background: white;
     border-bottom: 1px solid #eee;
     cursor: pointer;
-}
-
-.result-button {
-    display: block;
-    width: 100%;
-    text-align: left;
-    padding: 10px;
-    margin: 5px 0;
-    background-color: #f4f4f4;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.result-button:hover {
-    background-color: #e2e2e2;
-}
-
-.result-title {
-    font-weight: bold;
-}
-
-.result-description {
-    margin: 5px 0;
-}
-
-.result-date {
-    text-align: right;
-    float: right;
-}
-
-.treatment-button {
-    display: block;
-    width: 100%;
-    text-align: left;
-    padding: 10px;
-    margin: 5px 0;
-    background-color: #f4f4f4;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.treatment-button:hover {
-    background-color: #e2e2e2;
-}
-
-.treatment-title {
-    font-weight: bold;
-}
-
-.treatment-date {
-    text-align: right;
-    float: right;
-}
-
-.note-button {
-    display: block;
-    width: 100%;
-    text-align: left;
-    padding: 10px;
-    margin: 5px 0;
-    background-color: #f4f4f4;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.note-button:hover {
-    background-color: #e2e2e2;
-}
-
-.note-title {
-    font-weight: bold;
-}
-
-.note-date {
-    text-align: right;
-    float: right;
 }
 
 .summary-button {
@@ -394,4 +305,19 @@ body, html {
     background-color: #e0e0e0; /* Slightly darker background on hover */
 }
 
+.close-pdf {
+    padding: 10px 20px;
+    background-color: #f44336; /* Red color for visibility */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: absolute; /* Adjust as needed to position */
+    top: 10px; /* Adjust as needed to position */
+    right: 10px; /* Adjust as needed to position */
+}
+
+.close-pdf:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+}
 

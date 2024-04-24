@@ -1,0 +1,10 @@
+{
+    "answer": "The patient, Claire Thompson, has undergone a right breast lumpectomy and a sentinel lymph node biopsy.",
+    "citations": [
+        {
+            "quote": "Claire Thompson underwent a successful right breast lumpectomy with sentinel lymph node biopsy without complications.",
+            "source_id": 0,
+            "source_path": "patient/Patient Lumpectomy Discharge.pdf"
+        }
+    ]
+}

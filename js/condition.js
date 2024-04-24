@@ -1,255 +1,137 @@
-function showConditionContent(conditionId) {
-    // Hide all condition sections
+function showConditionContent(conditionId, conditionData) {
     const conditionContents = document.querySelectorAll('.condition-details .problem-section');
-    conditionContents.forEach(section => {
-        section.style.display = 'none'; // Initially hide all condition content
-    });
+    conditionContents.forEach(section => section.style.display = 'none');  // Hide all sections
 
-    // Show the content for the clicked condition
     const conditionContent = document.getElementById(conditionId);
     if (conditionContent) {
-        conditionContent.style.display = 'block'; // Display the content for the active condition
+        conditionContent.style.display = 'block';  // Display the active condition
+        const summaryElement = conditionContent.querySelector('p:nth-of-type(1)');
+        if (summaryElement) {
+            summaryElement.textContent = conditionData.summary;  // Update the summary
+        }
+        setupReportsButton(conditionId, conditionData.source_path);  // Setup report buttons
+    } else {
+        console.error(`No content found for condition id: ${conditionId}`);
     }
+}
+
+async function fetchReportsData(conditionName) {
+    const response = await fetch(`jsons/documents.json`);
+    if (!response.ok) throw new Error('Failed to fetch reports data');
+    const reportsData = await response.json();
+    const conditionData = reportsData.find(report => report.problem === conditionName);
+    if (!conditionData) throw new Error('No reports found for the given condition');
+    return conditionData; // Return the entire object, which includes both source_path and summary
 }
 
 function setupConditionTabs() {
     const conditionTabs = document.querySelectorAll('.condition-tab');
     conditionTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
+        tab.addEventListener('click', async () => {
+            const conditionName = tab.textContent.trim();
             conditionTabs.forEach(ct => ct.classList.remove('active'));
             tab.classList.add('active');
-            showConditionContent(tab.dataset.conditionId);
+
+            try {
+                const conditionData = await fetchReportsData(conditionName);
+                showConditionContent(tab.dataset.conditionId, conditionData);
+            } catch (error) {
+                console.error('Error fetching reports data:', error);
+            }
         });
     });
 
-    // Trigger click on the first condition tab to set it as active by default
     if (conditionTabs.length > 0) {
-        conditionTabs[0].click();
+        conditionTabs[0].click(); // Click the first tab by default
     }
-    setupEventTabs();
 }
 
-function setupEventTabs() {
-    const eventTabs = document.querySelectorAll('.event-tab');
+function setupReportsButton(conditionId, sourcePaths) {
+    // Hide all report content containers
+    hideAllReportContainer();
 
-    eventTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            eventTabs.forEach(et => et.classList.remove('active'));
-            // Hide all event content sections for the currently active condition
-            const activeConditionId = document.querySelector('.condition-tab.active').dataset.conditionId;
-            document.querySelectorAll(`#${activeConditionId}-results-content .event-content`).forEach(ec => ec.style.display = 'none');
+    const reportsContainer = document.getElementById(`${conditionId}-reports-content`);
+    if (!reportsContainer) {
+        console.error('Report container not found for:', conditionId);
+        return;
+    }
+    reportsContainer.innerHTML = ''; // Clear existing content
+    reportsContainer.style.display = 'block';
 
-            tab.classList.add('active');
-            const eventType = tab.dataset.eventTab; // "results", "notes", "treatments"
-            
-            // Correctly reference the container for the event types
-            const eventContentId = `${activeConditionId}-${eventType}`;
-            const eventContent = document.getElementById(eventContentId);
-            if (eventContent) {
-                eventContent.style.display = 'block'; // Show the correct event content
-            } else {
-                // If not, log an error
-                console.error(`Content for ${eventContentId} not found`);
-            }
-
-            // If the Results tab was clicked, generate buttons specifically for that condition
-            if (eventType === 'results') {
-                generateResultsButtons(activeConditionId);
-            }
-            if (eventType === 'treatments') {
-                generateTreatmentsButtons(activeConditionId);
-            }
-            if (eventType === 'notes') {
-                generateNotesButtons(activeConditionId);
-            }
-        });
+    sourcePaths.forEach(sourcePath => {
+        const reportButton = document.createElement('button');
+        reportButton.className = 'report-button';
+        const reportTitle = extractTitle(sourcePath);
+        reportButton.textContent = reportTitle;
+        reportButton.onclick = () => {
+            showReportPDF(sourcePath, conditionId);
+        }
+        reportsContainer.appendChild(reportButton);
+        //reportsContainer.style.display = 'active'
     });
-
-    // Click the first event tab to show its content by default if it exists
-    if (eventTabs.length > 0) {
-        eventTabs[0].click();
-    }
 }
 
-function generateResultsButtons(conditionId) {
-    console.log('Generating results buttons for condition:', conditionId);
-    const resultsData = {
-        'breast-cancer': [
-            {
-                title: 'Mammography',
-                description: 'Revealed a suspicious mass in the right breast, BI-RADS category 4.',
-                date: '2/16/2022',
-                documentLink: 'mammography-document.html'
-            },
-            {
-                title: 'Core Needle Biopsy',
-                description: 'Histopathological examination confirmed invasive ductal carcinoma, estrogen receptor-positive, HER2-negative',
-                date: '2/18/2022',
-                documentLink: 'biopsy-document.html'
-            }
-            // ... add more results data as needed
-        ],
-        'hypertension': [
-            {
-                title: 'Mammography',
-                description: 'Revealed a suspicious mass in the right breast, BI-RADS category 4.',
-                date: '2/16/2022',
-                documentLink: 'mammography-document.html'
-            },
-            {
-                title: 'Core Needle Biopsy',
-                description: 'Histopathological examination confirmed invasive ductal carcinoma, estrogen receptor-positive, HER2-negative',
-                date: '2/18/2022',
-                documentLink: 'biopsy-document.html'
-            }
-            // ... add more results data as needed
-        ],
-
-        // ... add results data for other conditions if needed
-    };
-
-    // Get the container for the results content
-    const resultsContentContainer = document.getElementById(`${conditionId}-results`);
-
-    if (!resultsContentContainer) {
-        console.error(`No results content container found for condition: ${conditionId}`);
-        return; // Exit the function if the container isn't found
-    }
-
-    resultsContentContainer.innerHTML = ''; // Clear existing content
-
-    const resultsForCondition = resultsData[conditionId];
-    if (resultsForCondition) {
-        resultsForCondition.forEach(result => {
-            const resultButton = document.createElement('button');
-            resultButton.classList.add('result-button');
-            resultButton.innerHTML = `
-                <div class="result-title">${result.title}:</div>
-                <div class="result-description">${result.description}</div>
-                <div class="result-date">${result.date}</div>
-            `; // Add inner HTML structure as needed
-            resultButton.addEventListener('click', () => {
-                window.location.href = result.documentLink; // Navigate to the document page
-            });
-            resultsContentContainer.appendChild(resultButton);
-            
-        });
-    }
+function showReportPDF(path, conditionId) {
+    const conditionContent = document.getElementById(conditionId);
+    const pdfContainer = conditionContent.querySelector('.report-content-container');
+    pdfContainer.innerHTML = `
+        <iframe src="${path}" style="width:100%; height:800px;" frameborder="0"></iframe>
+        <button class="close-pdf" onclick="hidePDFDisplay('${conditionId}')">Close PDF</button>
+    `;
+    pdfContainer.style.display = 'block';
 }
 
-function generateTreatmentsButtons(conditionId) {
-    console.log('Generating treatments buttons for condition:', conditionId);
-    const treatmentsData = {
-        'breast-cancer': [
-            {
-                title: 'Chemotherapy Treatment Medical Report',
-                date: '10/1/2022',
-                documentLink: 'mammography-document.html'
-            },
-            {
-                title: 'Core Needle Biopsy',
-                date: '3/27/2022',
-                documentLink: 'biopsy-document.html'
-            }
-            // ... add more results data as needed
-        ],
-        'hypertension': [
-            {
-                title: 'Chemotherapy Treatment Medical Report',
-                date: '10/1/2022',
-                documentLink: 'mammography-document.html'
-            },
-            {
-                title: 'Core Needle Biopsy',
-                date: '3/27/2022',
-                documentLink: 'biopsy-document.html'
-            }
-            // ... add more results data as needed
-        ]
-        // ... add results data for other conditions if needed
-    };
-
-    // Get the container for the results content
-    const treatmentsContentContainer = document.getElementById(`${conditionId}-treatments`);
-
-    if (!treatmentsContentContainer) {
-        console.error(`No results content container found for condition: ${conditionId}`);
-        return; // Exit the function if the container isn't found
-    }
-
-    treatmentsContentContainer.innerHTML = ''; // Clear existing content
-
-    const treatmentsForCondition = treatmentsData[conditionId];
-    if (treatmentsForCondition) {
-        treatmentsForCondition.forEach(treatment => {
-            const treatmentsButton = document.createElement('button');
-            treatmentsButton.classList.add('treatment-button');
-            treatmentsButton.innerHTML = `
-                <div class="treatment-title">${treatment.title}</div>
-                <div class="treatment-date">${treatment.date}</div>
-            `; // Add inner HTML structure as needed
-            treatmentsButton.addEventListener('click', () => {
-                window.location.href = treatment.documentLink; // Navigate to the document page
-            });
-            treatmentsContentContainer.appendChild(treatmentsButton);
-            
-        });
-    }
+function hidePDFDisplay(conditionId) {
+    const conditionContent = document.getElementById(conditionId);
+    const pdfContainer = conditionContent.querySelector('.report-content-container');
+    pdfContainer.innerHTML = '';  // Clear the iframe
+    const problemSection = conditionContent.querySelector('.problem-section');
+    problemSection.style.display = 'block';  // Show the original content
 }
 
-function generateNotesButtons(conditionId) {
-    console.log('Generating notes buttons for condition:', conditionId);
-    const notesData = {
-        'breast-cancer': [
-            {
-                title: 'Follow-up Consultation Note',
-                date: '10/1/2022',
-                documentLink: 'mammography-document.html'
-            }
-            // ... add more results data as needed
-        ], 
-        'hypertension': [
-            {
-                title: 'Follow-up Consultation Note',
-                date: '10/1/2022',
-                documentLink: 'mammography-document.html'
-            }
-            // ... add more results data as needed
-        ]
-        // ... add results data for other conditions if needed
-    };
-
-    // Get the container for the results content
-    const notesContentContainer = document.getElementById(`${conditionId}-notes`);
-    console.log(notesContentContainer)
-
-    if (!notesContentContainer) {
-        console.error(`No results content container found for condition: ${conditionId}`);
-        return; // Exit the function if the container isn't found
-    }
-
-    notesContentContainer.innerHTML = ''; // Clear existing content
-
-    const notesForCondition = notesData[conditionId];
-    console.log(notesForCondition)
-    if (notesForCondition) {
-        notesForCondition.forEach(note => {
-            const notesButton = document.createElement('button');
-            notesButton.classList.add('note-button');
-            notesButton.innerHTML = `
-                <div class="note-title">${note.title}</div>
-                <div class="note-date">${note.date}</div>
-            `; // Add inner HTML structure as needed
-            notesButton.addEventListener('click', () => {
-                window.location.href = note.documentLink; // Navigate to the document page
-            });
-            console.log(notesButton)
-            notesContentContainer.appendChild(notesButton);
-            
-        });
-    }
+function extractTitle(filePath) {
+    const fileNameWithExtension = filePath.split('/').pop();
+    const fileName = fileNameWithExtension.split('.').slice(0, -1).join('.');
+    return fileName.replace(/_/g, ' ');
 }
+
+function hideAllReportContainer() {
+    const reportContainers = document.querySelectorAll('.report-content-container');
+    reportContainers.forEach(container => {
+        container.style.display = 'none';
+    });
+}
+
+/* function createConditionSubTab(title, path, conditionId) {
+    const conditionTab = document.querySelector(`#${conditionId}-condition-tabs`); // Assuming a specific ID structure
+    if (!conditionTab) {
+        console.error('Condition tab not found for:', conditionId);
+        return;
+    }
+    const subTab = document.createElement('button');
+    subTab.className = 'condition-sub-tab';
+    subTab.textContent = title;
+    subTab.onclick = () => showReportPDF(path);
+    
+    conditionTab.appendChild(subTab);
+}
+
+function updateSidebar(author, summary) {
+    const sidebar = document.querySelector('.patient-info');
+    const authorElement = document.createElement('p');
+    const summaryElement = document.createElement('p');
+
+    authorElement.innerHTML = `<strong>Author:</strong> ${author}`;
+    summaryElement.innerHTML = `<strong>Summary:</strong> ${summary}`;
+
+    // Append these under the existing patient info but clear previous report info
+    sidebar.querySelectorAll('.dynamic-info').forEach(e => e.remove()); // Clear previous dynamic info
+    authorElement.classList.add('dynamic-info');
+    summaryElement.classList.add('dynamic-info');
+
+    sidebar.appendChild(authorElement);
+    sidebar.appendChild(summaryElement);
+} */
 
 // Assuming this script is included after main.js and executes after main.js has set up the tabs
 setupConditionTabs();
-setupEventTabs();

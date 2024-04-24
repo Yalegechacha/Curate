@@ -1,0 +1,67 @@
+{
+    "medications": [
+        {
+            "active": true,
+            "dosage": "5 mg daily",
+            "name": "Amlodipine",
+            "quote": "Current Medications: Amlodipine 5 mg daily",
+            "source_id": 0,
+            "source_path": "patient/Hypertension Treatment Medical Report.pdf"
+        },
+        {
+            "active": true,
+            "dosage": "25 mg daily",
+            "name": "Hydrochlorothiazide",
+            "quote": "Current Medications: Hydrochlorothiazide 25 mg daily",
+            "source_id": 0,
+            "source_path": "patient/Hypertension Treatment Medical Report.pdf"
+        },
+        {
+            "active": true,
+            "dosage": "75 mg/m² IV infusion on Day 1 of each cycle",
+            "name": "Docetaxel",
+            "quote": "Docetaxel: 75 mg/m² IV infusion on Day 1 of each cycle",
+            "source_id": 2,
+            "source_path": "patient/Chemotherapy Treatment Medical Report.pdf"
+        },
+        {
+            "active": true,
+            "dosage": "50 mg/m² IV infusion on Day 1 of each cycle",
+            "name": "Doxorubicin",
+            "quote": "Doxorubicin: 50 mg/m² IV infusion on Day 1 of each cycle",
+            "source_id": 2,
+            "source_path": "patient/Chemotherapy Treatment Medical Report.pdf"
+        },
+        {
+            "active": true,
+            "dosage": "500 mg/m² IV infusion on Day 1 of each cycle",
+            "name": "Cyclophosphamide",
+            "quote": "Cyclophosphamide: 500 mg/m² IV infusion on Day 1 of each cycle",
+            "source_id": 2,
+            "source_path": "patient/Chemotherapy Treatment Medical Report.pdf"
+        }
+    ],
+    "overview": "Claire Thompson, a 52-year-old female with a history of hypertension, presented with a lump in her right breast, diagnosed with Stage II Invasive Ductal Carcinoma. She underwent a lumpectomy and sentinel lymph node biopsy, followed by a treatment plan including a TAC chemotherapy regimen and radiation therapy. Post-treatment, she completed chemotherapy with expected adverse effects and is currently stable with no signs of disease recurrence. Ongoing monitoring with surveillance mammography and clinical examinations is recommended, along with adherence to prescribed medications and lifestyle modifications.",
+    "particulars": {
+        "age": "52",
+        "dob": "May 12, 1972",
+        "gender": "Female",
+        "name": "Claire Thompson"
+    },
+    "problems": [
+        {
+            "active": true,
+            "name": "Invasive Ductal Carcinoma",
+            "quote": "Diagnosis: Invasive Ductal Carcinoma, Stage II",
+            "source_id": 2,
+            "source_path": "patient/Patient Lumpectomy Discharge.pdf"
+        },
+        {
+            "active": true,
+            "name": "Hypertension",
+            "quote": "History of Present Illness: Ms. Thompson has a history of hypertension for which she has been under treatment for the past five years.",
+            "source_id": 0,
+            "source_path": "patient/Hypertension Treatment Medical Report.pdf"
+        }
+    ]
+}

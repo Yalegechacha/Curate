@@ -1,0 +1,20 @@
+[
+    {
+        "problem": "Invasive Ductal Carcinoma",
+        "source_path": [
+            "patient/Biopsy Report.pdf",
+            "patient/Chemotherapy Treatment Medical Report.pdf",
+            "patient/Follow-up Consultation Doctor's Note.pdf",
+            "patient/Mammography Report.pdf",
+            "patient/Patient Lumpectomy Discharge.pdf"
+        ],
+        "summary": "Claire Thompson was diagnosed with invasive ductal carcinoma of the breast, grade 3, which was estrogen receptor positive and HER2 negative. She underwent lumpectomy with sentinel lymph node biopsy and is on a treatment plan including chemotherapy, radiation therapy, and hormonal therapy. Follow-up appointments are scheduled for ongoing monitoring and surveillance."
+    },
+    {
+        "problem": "Hypertension",
+        "source_path": [
+            "patient/Hypertension Treatment Medical Report.pdf"
+        ],
+        "summary": "Claire Thompson has a history of hypertension for the past five years, managed with amlodipine and hydrochlorothiazide. Her blood pressure is controlled, and adherence to medications and lifestyle modifications is emphasized for long-term management. Regular follow-up appointments are scheduled every 3 months for monitoring."
+    }
+]
