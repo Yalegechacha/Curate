@@ -6,32 +6,44 @@ const tabMap = {
     'Tests': '.tests-container'
 };
 
-let globalPatientData = null;
+
+let overviewData = [];
+let conditionsData = [];
+
+async function fetchOverviewData() {
+    try {
+        const response = await fetch('jsons/overview.json');
+        if (!response.ok) throw new Error('Failed to fetch medications data');
+        const data = await response.json();
+        overviewData = data;
+        medicationsData = overviewData.medications;
+    } catch (error) {
+        console.error('Error fetching medications data:', error);
+    }
+}
+
+async function fetchConditionsData() {
+    try {
+        const response = await fetch('jsons/documents.json');
+        if (!response.ok) throw new Error('Failed to fetch conditions data');
+        const data = await response.json();
+        conditionsData = data;
+    } catch (error) {
+        console.error('Error fetching conditions data:', error);
+    }
+}
+
+async function initializeApp() {
+    await fetchOverviewData();
+    await fetchConditionsData();
+    populatePatientInfo(overviewData.particulars)
+    initializeTabs();
+}
 
 // Fetch the data as soon as the DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    fetchPatientData(); // Fetch the patient data
-    initializeTabs(); // Initialize the tab functionality
+    initializeApp();
 });
-
-// Fetch patient data from the JSON file
-function fetchPatientData() {
-    fetch('jsons/overview.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok: ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            globalPatientData = data; // Store the data globally
-            populatePatientInfo(data.particulars); // Populate patient info
-            showTabContent('Summary'); // Display summary tab content by default
-        })
-        .catch(error => {
-            console.error('Error fetching patient data:', error);
-        });
-}
 
 // Initialize tabs with click events
 function initializeTabs() {
@@ -67,8 +79,8 @@ function showTabContent(tabName) {
         content.style.display = 'flex'; // Adjust this as necessary for your layout
 
         // Populate the content if needed
-        if (tabName === 'Summary' && globalPatientData) {
-            populateSummary(globalPatientData);
+        if (tabName === 'Summary' && overviewData) {
+            populateSummary(overviewData);
         }
     }
 }
@@ -117,7 +129,7 @@ function populatePatientInfo(particulars) {
 
 
 function populateSummary(data) {
-    if (globalPatientData) {
+    if (data) {
         const summaryContentElement = document.getElementById('summary-content');
         summaryContentElement.innerHTML = ''; // Clear out existing content
 
@@ -161,18 +173,49 @@ function populateSummary(data) {
         medicationsTitle.textContent = 'Medications';
         summaryContentElement.appendChild(medicationsTitle);
 
+
         const medicationsContainer = document.createElement('div');
         data.medications.forEach(medication => {
-            const medicationButton = document.createElement('button');
-            medicationButton.textContent = `${medication.name} ${medication.dosage} (${medication.active ? 'Active' : 'Inactive'})`;
-            medicationButton.className = 'summary-button';
-            medicationButton.onclick = function () {
-                window.open(medication.source_path, '_blank');
+            const button = document.createElement('button');
+            button.textContent = `${medication.name} (${medication.dosage}) - ${medication.active ? 'Active' : 'Inactive'}`;
+            button.className = 'summary-button';
+            button.id = `${medication.name}-button`;
+            button.onclick = () => {
+                const conditionId = findConditionIdBySourcePath(medication.source_path);
+                if (conditionId) {
+                    const problemsTab = document.querySelector('.tabs button:nth-child(2)');
+                    const conditionTab = document.querySelector(`.condition-button[data-condition-id="${conditionId}"]`);
+        
+                    if (problemsTab && conditionTab) {
+                        // Click the Problems tab first
+                        problemsTab.click();
+                        // Wait for the UI to update
+                        setTimeout(() => {
+                            // Then click the specific condition tab
+                            console.log(conditionTab)
+                            conditionTab.click();
+                            // Another delay to ensure the UI has updated
+                            setTimeout(() => {
+                                // Now show the PDF
+                                showReportPDF(medication.source_path, conditionId);
+                            }, 100);
+                        }, 100);
+                    } else {
+                        console.error("Required tabs not found:", {problemsTab, conditionTab});
+                    }
+                } else {
+                    console.error("Condition ID not found for the given source path.");
+                }
             };
-            medicationsContainer.appendChild(medicationButton);
+            medicationsContainer.appendChild(button);
         });
         summaryContentElement.appendChild(medicationsContainer);
 
         // Add any additional elements you need for the summary content here...
     }
+}
+
+function findConditionIdBySourcePath(sourcePath) {
+    const condition = conditionsData.find(condition => condition.source_path.includes(sourcePath));
+    return condition ? condition.problem.replace(/ /g, '-').toLowerCase() : null; // transform the problem name into a valid ID format if necessary
 }

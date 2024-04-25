@@ -190,7 +190,7 @@ body, html {
     justify-content: flex-start; /* Align children to the start of the flex container */
 }
 
-.condition-tab {
+.condition-button {
     /* Other styles remain the same */
     background-color: #d0e2e4; /* Sets the background color to match the content container */
     margin-bottom: 10px; /* Adjust this value to increase space between the buttons if needed */
@@ -200,14 +200,14 @@ body, html {
     /* ... */
 }
 
-.condition-tab:hover,
-.condition-tab.active {
+.condition-button:hover,
+.condition-button.active {
     /* Styles for hovered-over or selected tabs */
     color: #007bff; /* Blue color for text when hovered over or selected */
     /* ... other styles ... */
 }
 
-.condition-tab:last-child {
+.condition-button:last-child {
     margin-bottom: 0; /* Removes the margin from the last tab to avoid extra space at the bottom */
 }
 

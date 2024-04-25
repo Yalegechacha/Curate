@@ -25,7 +25,7 @@ async function fetchReportsData(conditionName) {
 }
 
 function setupConditionTabs() {
-    const conditionTabs = document.querySelectorAll('.condition-tab');
+    const conditionTabs = document.querySelectorAll('.condition-button');
     conditionTabs.forEach(tab => {
         tab.addEventListener('click', async () => {
             const conditionName = tab.textContent.trim();
@@ -65,6 +65,7 @@ function setupReportsButton(conditionId, sourcePaths) {
         reportButton.textContent = reportTitle;
         reportButton.onclick = () => {
             showReportPDF(sourcePath, conditionId);
+            createConditionSubTab(reportTitle, sourcePath, conditionId)
         }
         reportsContainer.appendChild(reportButton);
         //reportsContainer.style.display = 'active'
@@ -102,21 +103,7 @@ function hideAllReportContainer() {
     });
 }
 
-/* function createConditionSubTab(title, path, conditionId) {
-    const conditionTab = document.querySelector(`#${conditionId}-condition-tabs`); // Assuming a specific ID structure
-    if (!conditionTab) {
-        console.error('Condition tab not found for:', conditionId);
-        return;
-    }
-    const subTab = document.createElement('button');
-    subTab.className = 'condition-sub-tab';
-    subTab.textContent = title;
-    subTab.onclick = () => showReportPDF(path);
-    
-    conditionTab.appendChild(subTab);
-}
-
-function updateSidebar(author, summary) {
+/* function updateSidebar(author, summary) {
     const sidebar = document.querySelector('.patient-info');
     const authorElement = document.createElement('p');
     const summaryElement = document.createElement('p');
