@@ -12,19 +12,19 @@ let conditionsData = [];
 
 async function fetchOverviewData() {
     try {
-        const response = await fetch('jsons/overview.json');
+        const response = await fetch('http://https://curate-cornell-9e700cd2e9e3.herokuapp.com/patient/overview');
         if (!response.ok) throw new Error('Failed to fetch medications data');
         const data = await response.json();
         overviewData = data;
         medicationsData = overviewData.medications;
     } catch (error) {
-        console.error('Error fetching medications data:', error);
+        console.error('Error fetching overviews data:', error);
     }
 }
 
 async function fetchConditionsData() {
     try {
-        const response = await fetch('jsons/documents.json');
+        const response = await fetch('http://https://curate-cornell-9e700cd2e9e3.herokuapp.com/patient/documents');
         if (!response.ok) throw new Error('Failed to fetch conditions data');
         const data = await response.json();
         conditionsData = data;
@@ -53,6 +53,7 @@ function initializeTabs() {
             resetTabs(); // Reset the styling for all tabs
             event.target.classList.add('active'); // Set the clicked tab to active
             showTabContent(event.target.textContent.trim()); // Show the corresponding tab content
+            populatePatientInfo(overviewData.particulars)
         });
     });
 
@@ -118,13 +119,16 @@ function resetTabs() {
 }
 
 function populatePatientInfo(particulars) {
-    const patientInfoElement = document.querySelector('.patient-info');
+    const sidebar = document.querySelector('.patient-info');
+    const patientInfoElement = document.createElement('div')
     patientInfoElement.innerHTML = `
         <h1>${particulars.name}</h1>
         <p><strong>Age:</strong> ${particulars.age}</p>
         <p><strong>Gender:</strong> ${particulars.gender}</p>
         <p><strong>Date of Birth:</strong> ${particulars.dob}</p>
     `;
+    sidebar.appendChild(patientInfoElement);
+    patientInfoElement.style.display = 'block';
 }
 
 

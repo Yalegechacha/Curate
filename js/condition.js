@@ -1,3 +1,18 @@
+let document_summary = {}
+
+async function fetchDocumentSummary(filePath) {
+    try {
+        fileTitle = extractTitle(filePath);
+        const response = await fetch(`http://https://curate-cornell-9e700cd2e9e3.herokuapp.com/patient/document-summary/${fileTitle}`);
+        if (!response.ok) throw new Error('Failed to fetch medications data');
+        const data = await response.json();
+        document_summary[fileTitle] = data
+    } catch (error) {
+        console.error('Error fetching overviews data:', error);
+    }
+    
+}
+
 function showConditionContent(conditionId, conditionData) {
     const conditionContents = document.querySelectorAll('.condition-details .problem-section');
     conditionContents.forEach(section => section.style.display = 'none');  // Hide all sections
@@ -64,6 +79,7 @@ function setupReportsButton(conditionId, sourcePaths) {
         const reportTitle = extractTitle(sourcePath);
         reportButton.textContent = reportTitle;
         reportButton.onclick = () => {
+            updateSidebar(sourcePath);
             showReportPDF(sourcePath, conditionId);
             createConditionSubTab(reportTitle, sourcePath, conditionId)
         }
@@ -76,7 +92,7 @@ function showReportPDF(path, conditionId) {
     const conditionContent = document.getElementById(conditionId);
     const pdfContainer = conditionContent.querySelector('.report-content-container');
     pdfContainer.innerHTML = `
-        <iframe src="${path}" style="width:100%; height:800px;" frameborder="0"></iframe>
+        <iframe src="http://https://curate-cornell-9e700cd2e9e3.herokuapp.com/patient/document/${extractTitle(path)}" style="width:100%; height:800px;" frameborder="0"></iframe>
         <button class="close-pdf" onclick="hidePDFDisplay('${conditionId}')">Close PDF</button>
     `;
     pdfContainer.style.display = 'block';
@@ -103,22 +119,25 @@ function hideAllReportContainer() {
     });
 }
 
-/* function updateSidebar(author, summary) {
+function updateSidebar(sourcePath) {
     const sidebar = document.querySelector('.patient-info');
+    sidebar.firstElementChild.style.display = 'none';
+    const pdfSummary = document.createElement('div');
     const authorElement = document.createElement('p');
     const summaryElement = document.createElement('p');
+    fileTitle = extractTitle(sourcePath);
+    fileContent = document_summary[fileTitle];
 
-    authorElement.innerHTML = `<strong>Author:</strong> ${author}`;
-    summaryElement.innerHTML = `<strong>Summary:</strong> ${summary}`;
-
-    // Append these under the existing patient info but clear previous report info
-    sidebar.querySelectorAll('.dynamic-info').forEach(e => e.remove()); // Clear previous dynamic info
+    authorElement.innerHTML = `<strong>Author:</strong> ${fileContent.author}`;
+    summaryElement.innerHTML = `<strong>Summary:</strong> ${fileContent.author}`;
     authorElement.classList.add('dynamic-info');
     summaryElement.classList.add('dynamic-info');
 
-    sidebar.appendChild(authorElement);
-    sidebar.appendChild(summaryElement);
-} */
+    pdfSummary.appendChild(authorElement);
+    pdfSummary.appendChild(summaryElement);
+    pdfSummary.style.display = 'block';
+    sidebar.appendChild(pdfSummary)
+}
 
 // Assuming this script is included after main.js and executes after main.js has set up the tabs
 setupConditionTabs();
