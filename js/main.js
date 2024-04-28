@@ -42,10 +42,7 @@ async function initializeApp() {
     await fetchOverviewData();
     await fetchConditionsData();
     window.location.href = 'dashboard.html';
-}
-
-function setupDashboard() {
-    populatePatientInfo(overviewData.particulars);
+    populatePatientInfo(overviewData.particulars)
     initializeTabs();
 }
 

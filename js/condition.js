@@ -1,9 +1,5 @@
 let document_summary = {}
 
-document.addEventListener('DOMContentLoaded', function() {
-    setupDashboard(); // This function will continue the initialization specific to dashboard.html
-});
-
 async function fetchDocumentSummary(filePath) {
     try {
         fileTitle = extractTitle(filePath);
