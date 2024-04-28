@@ -12,7 +12,7 @@ let conditionsData = [];
 
 async function fetchOverviewData() {
     try {
-        const response = await fetch('http://https://curate-cornell-9e700cd2e9e3.herokuapp.com/patient/overview', {
+        const response = await fetch('https://curate-cornell-9e700cd2e9e3.herokuapp.com/patient/overview', {
             method: 'GET'
         });
         if (!response.ok) throw new Error('Failed to fetch medications data');
@@ -26,7 +26,7 @@ async function fetchOverviewData() {
 
 async function fetchConditionsData() {
     try {
-        const response = await fetch('http://https://curate-cornell-9e700cd2e9e3.herokuapp.com/patient/documents', {
+        const response = await fetch('https://curate-cornell-9e700cd2e9e3.herokuapp.com/patient/documents', {
             method: 'GET'
         })
         if (!response.ok) throw new Error('Failed to fetch conditions data');
