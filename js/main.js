@@ -40,11 +40,6 @@ async function initializeApp() {
     initializeTabs();
 }
 
-// Fetch the data as soon as the DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
-});
-
 // Initialize tabs with click events
 function initializeTabs() {
     const tabs = document.querySelectorAll('.tabs button');
@@ -86,24 +81,38 @@ function showTabContent(tabName) {
     }
 }
 
-function loadFile() {
-    var fileInput = document.getElementById('file-input');
-    var filePath = fileInput.value;
+async function loadFile() {
+    const fileInput = document.getElementById('file-input');
     
-    // Check if any file is selected or not
     if (fileInput.files.length > 0) {
-        var allowedExtensions = /(\.pdf)$/i;
-        
-        if (!allowedExtensions.exec(filePath)) {
-            alert('Please upload file having extensions .pdf only.');
-            fileInput.value = ''; // Clear the input
-            return false;
-        } else {
-            // Image preview
-            document.getElementById('loading').style.display = 'block';
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 3000); // simulate loading time
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+
+        try {
+            // First, upload the file
+            const uploadResponse = await fetch('https://curate-cornell-9e700cd2e9e3.herokuapp.com/upload', {
+                method: 'POST',
+                body: formData,
+            });
+            const uploadResult = await uploadResponse.json();
+            if (!uploadResponse.ok) throw new Error(uploadResult.message);
+
+            alert('File uploaded successfully!');
+
+            // Then, call the /init API
+            const initResponse = await fetch('https://curate-cornell-9e700cd2e9e3.herokuapp.com/init?type=new', {
+                method: 'POST'
+            });
+            const initResult = await initResponse.json();
+            if (!initResponse.ok) throw new Error(initResult.message);
+
+            alert('Database initialized!');
+
+            // If everything is successful, initialize the app
+            initializeApp();
+        } catch (error) {
+            console.error('Error during the upload or initialization process:', error);
+            alert(error.message);
         }
     } else {
         alert('Please select a file.');
