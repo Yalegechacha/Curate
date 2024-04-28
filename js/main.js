@@ -33,19 +33,30 @@ async function fetchConditionsData() {
         const data = await response.json();
         if (!response.ok) throw new Error('Failed to fetch conditions data');
         conditionsData = data;
+        console.log(conditionsData)
     } catch (error) {
         console.error('Error fetching conditions data:', error);
     }
 }
 
 async function initializeApp() {
-    await fetchOverviewData();
-    await fetchConditionsData();
-    setTimeout(() => {
-        window.location.href = 'dashboard.html';
-    }, 3000);
-    initializeTabs();
+    try {
+        await fetchOverviewData();
+        await fetchConditionsData();
+    } catch (error) {
+        console.error('Initialization failed:', error);
+    }
 }
+
+// Call initializeApp() where you handle file upload or directly in the DOMContentLoaded listener if it's always needed on page load.
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.pathname === "/dashboard.html") {
+        initializeApp().then(() => {
+            populatePatientInfo(overviewData.particulars);
+            initializeTabs();
+        });
+    }
+});
 
 // Initialize tabs with click events
 function initializeTabs() {
@@ -56,6 +67,7 @@ function initializeTabs() {
             event.target.classList.add('active'); // Set the clicked tab to active
             showTabContent(event.target.textContent.trim()); // Show the corresponding tab content
             populatePatientInfo(overviewData.particulars)
+            console.log('button clicked')
         });
     });
 
@@ -117,7 +129,13 @@ async function loadFile() {
             alert('Database initialized!');
 
             // If everything is successful, initialize the app
-            initializeApp();
+            await initializeApp();  // Assuming this fetches all required data and prepares the app
+
+            // Store necessary data if needed
+            localStorage.setItem('overviewData', JSON.stringify(overviewData)); // Example for storing data
+
+            // Navigate to the dashboard
+            window.location.href = 'dashboard.html';
         } catch (error) {
             console.error('Error during the upload or initialization process:', error);
             alert(error.message);
@@ -138,6 +156,7 @@ function resetTabs() {
 function populatePatientInfo(particulars) {
     console.log(particulars)
     const sidebar = document.querySelector('.patient-info');
+    sidebar.innerHTML = '';
     const patientInfoElement = document.createElement('div')
     patientInfoElement.innerHTML = `
         <h1>${particulars.name}</h1>
