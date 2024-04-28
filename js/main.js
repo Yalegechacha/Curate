@@ -18,6 +18,7 @@ async function fetchOverviewData() {
         if (!response.ok) throw new Error('Failed to fetch medications data');
         const data = await response.json();
         overviewData = data;
+        console.log(overviewData)
         medicationsData = overviewData.medications;
     } catch (error) {
         console.error('Error fetching overviews data:', error);
@@ -114,9 +115,7 @@ async function loadFile() {
             alert('Database initialized!');
 
             // If everything is successful, initialize the app
-            console.log('initializing app')
             initializeApp();
-            console.log('app initialized')
         } catch (error) {
             console.error('Error during the upload or initialization process:', error);
             alert(error.message);
@@ -135,6 +134,7 @@ function resetTabs() {
 }
 
 function populatePatientInfo(particulars) {
+    console.log(particulars)
     const sidebar = document.querySelector('.patient-info');
     const patientInfoElement = document.createElement('div')
     patientInfoElement.innerHTML = `
@@ -143,6 +143,7 @@ function populatePatientInfo(particulars) {
         <p><strong>Gender:</strong> ${particulars.gender}</p>
         <p><strong>Date of Birth:</strong> ${particulars.dob}</p>
     `;
+    console.log(patientInfoElement)
     sidebar.appendChild(patientInfoElement);
     patientInfoElement.style.display = 'block';
 }
