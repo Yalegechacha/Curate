@@ -41,6 +41,9 @@ async function fetchConditionsData() {
 async function initializeApp() {
     await fetchOverviewData();
     await fetchConditionsData();
+    setTimeout(() => {
+        window.location.href = 'dashboard.html';
+    }, 3000);
     populatePatientInfo(overviewData.particulars)
     initializeTabs();
 }
