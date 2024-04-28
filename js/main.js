@@ -110,7 +110,9 @@ async function loadFile() {
             alert('Database initialized!');
 
             // If everything is successful, initialize the app
+            console.log('initializing app')
             initializeApp();
+            console.log('app initialized')
         } catch (error) {
             console.error('Error during the upload or initialization process:', error);
             alert(error.message);
