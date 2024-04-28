@@ -100,7 +100,7 @@ async function loadFile() {
             alert('File uploaded successfully!');
 
             // Then, call the /init API
-            const initResponse = await fetch('https://curate-cornell-9e700cd2e9e3.herokuapp.com/init?type=new', {
+            const initResponse = await fetch('https://curate-cornell-9e700cd2e9e3.herokuapp.com/init', {
                 method: 'POST'
             });
             const initResult = await initResponse.json();
