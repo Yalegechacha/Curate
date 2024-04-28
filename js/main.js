@@ -98,6 +98,7 @@ async function loadFile() {
             if (!uploadResponse.ok) throw new Error(uploadResult.message);
 
             alert('File uploaded successfully!');
+            document.getElementById('loading').style.display = 'block';
 
             // Then, call the /init API
             const initResponse = await fetch('https://curate-cornell-9e700cd2e9e3.herokuapp.com/init', {
